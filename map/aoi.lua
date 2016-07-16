@@ -19,11 +19,11 @@ end
 
 function aoi.insert (id, pos)
 	if object[id] then return end
-	
+
 	local tree = qtree:insert (id, pos.x, pos.y)
 	if not tree then return end
 
-	local result = {} 
+	local result = {}
 	qtree:query (id, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, result)
 
 	local list = {}
@@ -37,7 +37,7 @@ function aoi.insert (id, pos)
 	end
 
 	object[id] = { id = id, pos = pos, qtree = tree, list = list }
-	
+
 	return true, list
 end
 
@@ -78,7 +78,7 @@ function aoi.update (id, pos)
 		qtree:remove (id)
 	end
 
-	local olist = c.list
+	local olist = c.list -- 旧列表
 
 	local tree = qtree:insert (id, pos.x, pos.y)
 	if not tree then
@@ -88,29 +88,25 @@ function aoi.update (id, pos)
 
 	c.pos = pos
 
-	local result = {}
+	local result = {} -- 当前为查询到范围内的对象
 	qtree:query (id, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, result)
 
-	local nlist = {}
-	for i = 1, #result do
-		local cid = result[i]
-		nlist[cid] = cid
+	local nlist = {} -- 新列表
+    for k, v in pairs (result) do
+		nlist[v] = v
 	end
 
-	local ulist = {}
-	for _, a in pairs (nlist) do
-		local k = olist[a]
+	local ulist = {} -- 更新列表 = 新旧列表的交集
+	for k, v in pairs (nlist) do
+		local k = olist[v]
 		if k then
-			ulist[a] = a
-			olist[a] = nil
+			ulist[v] = v
+			olist[v] = nil -- 新旧列表删除该元素
+            nlist[k] = nil
 		end
 	end
 
-	for _, a in pairs (ulist) do
-		nlist[a] = nil
-	end
-
-	c.list = {}
+	c.list = {} -- 新列表
 	for _, v in pairs (nlist) do
 		c.list[v] = v
 	end

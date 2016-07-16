@@ -32,6 +32,7 @@ end
 function quadtree:genChildren ()
     if self.depth >= MAX_DEPTH then
         counter = counter + 1 -- counter total tree:depth = 5
+        -- dump(self)
         return
     end
 
@@ -43,21 +44,21 @@ function quadtree:genChildren ()
     local centery = (top + bottom) // 2
 
     local tree1 = quadtree.new (left, centery, centerx, top, self)
-    if tree1 then
+    -- if tree1 then
         tree1:genChildren()
-    end
+    -- end
     local tree2 = quadtree.new (centerx, centery, right, top, self)
-    if tree2 then
+    -- if tree2 then
         tree2:genChildren()
-    end
+    -- end
     local tree3 = quadtree.new (left, bottom, centerx, centery, self)
-    if tree3 then
+    -- if tree3 then
         tree3:genChildren()
-    end
+    -- end
     local tree4 = quadtree.new (centerx, bottom, right, centery, self)
-    if tree4 then
+    -- if tree4 then
         tree4:genChildren()
-    end
+    -- end
 
     self.children = { tree1, tree2, tree3, tree4}
 end
